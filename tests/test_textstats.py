@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from textstats import top_words, word_count, words  # noqa: E402
+from textstats import count_sentences, top_words, word_count, words  # noqa: E402
 
 
 class TestTextStats(unittest.TestCase):
@@ -36,6 +36,21 @@ class TestTextStats(unittest.TestCase):
         self.assertEqual(
             top_words("A a A b B", 2), [("a", 3), ("b", 2)]
         )
+
+    def test_count_sentences_empty(self):
+        self.assertEqual(count_sentences(""), 0)
+
+    def test_count_sentences_single(self):
+        self.assertEqual(count_sentences("Bonjour tout le monde."), 1)
+
+    def test_count_sentences_multiple(self):
+        self.assertEqual(count_sentences("Bonjour. Salut ! Ça va ?"), 3)
+
+    def test_count_sentences_repeated_punctuation(self):
+        self.assertEqual(count_sentences("Incroyable ?! Non... Vraiment."), 3)
+
+    def test_count_sentences_no_final_punctuation(self):
+        self.assertEqual(count_sentences("Première phrase. Deuxième sans point final"), 1)
 
 
 if __name__ == "__main__":

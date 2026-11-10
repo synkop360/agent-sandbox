@@ -4,6 +4,7 @@ import re
 from collections import Counter
 
 _WORD = re.compile(r"[\w'-]+", re.UNICODE)
+_SENTENCE_END = re.compile(r"[.!?]+")
 
 
 def words(text: str) -> list[str]:
@@ -28,3 +29,13 @@ def top_words(text: str, n: int) -> list[tuple[str, int]]:
     counts = Counter(words(text))
     sorted_words = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
     return sorted_words[:n]
+
+
+def count_sentences(text: str) -> int:
+    """Nombre de phrases terminées par `.`, `!` ou `?`.
+
+    Une suite de terminaisons consécutives (par exemple `?!` ou `...`)
+    compte pour une seule fin de phrase. Le texte vide contient 0 phrase,
+    et les phrases sans ponctuation finale ne sont pas comptées.
+    """
+    return len(_SENTENCE_END.findall(text))
